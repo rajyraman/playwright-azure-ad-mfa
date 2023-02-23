@@ -1,6 +1,7 @@
 name: Playwright Tests
 on: workflow_dispatch
 env:
+  ci: ${{ github.ci }}
   userName: ${{ vars.USER_NAME }}
   environmentUrl: ${{ vars.ENV_URL }}
   isRefreshCookies: 1
