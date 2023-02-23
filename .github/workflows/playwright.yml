@@ -2,14 +2,14 @@ name: Playwright Tests
 on: workflow_dispatch
 jobs:
   test:
-    env:
-      environmentUrl: ${{ env.ENV_URL }}
-      isRefreshCookies: 1
-      totp: ${{ secrets.ACCOUNT_TOTP }}
-      password: ${{ secrets.ACCOUNT_PASSWORD }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
+      env:
+        environmentUrl: ${{ env.ENV_URL }}
+        isRefreshCookies: 1
+        totp: ${{ secrets.ACCOUNT_TOTP }}
+        password: ${{ secrets.ACCOUNT_PASSWORD }}
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
