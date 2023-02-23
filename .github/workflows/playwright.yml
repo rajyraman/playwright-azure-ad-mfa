@@ -3,7 +3,7 @@ on: workflow_dispatch
 jobs:
   test:
     env:
-      environmentUrl: ${{ secrets.ENV_URL }}
+      environmentUrl: ${{ env.ENV_URL }}
       isRefreshCookies: 1
       totp: ${{ secrets.ACCOUNT_TOTP }}
       password: ${{ secrets.ACCOUNT_PASSWORD }}
