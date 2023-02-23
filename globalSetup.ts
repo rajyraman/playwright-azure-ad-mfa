@@ -13,13 +13,16 @@ async function globalSetup(config: FullConfig) {
     if (process.env.isRefreshCookies === '1') {
         const browser = await chromium.launch();
         const page = await browser.newPage();
-        const cred = new ChainedTokenCredential(
-            new AzureCliCredential(),
-            new AzurePowerShellCredential(),
-            new ManagedIdentityCredential()
-        );
-        const tokenResponse = await cred.getToken(`${new URL(baseURL!).origin}/.default`);
-        const userName = JSON.parse(Buffer.from(tokenResponse.token.split('.')[1], 'base64').toString())?.upn;
+        let userName = process.env.userName!;
+        if(!process.env.ci){
+            const cred = new ChainedTokenCredential(
+                new AzureCliCredential(),
+                new AzurePowerShellCredential(),
+                new ManagedIdentityCredential()
+            );
+            const tokenResponse = await cred.getToken(`${new URL(baseURL!).origin}/.default`);
+            userName = JSON.parse(Buffer.from(tokenResponse.token.split('.')[1], 'base64').toString())?.upn;
+        }
         await page.goto(baseURL!, { waitUntil: 'networkidle' });
 
         const userNameTextBox = page.locator('[name=loginfmt]');
