@@ -13,8 +13,8 @@ async function globalSetup(config: FullConfig) {
     if (process.env.isRefreshCookies === '1') {
         const browser = await chromium.launch();
         const page = await browser.newPage();
-        let userName = process.env.userName!;
-        if(!process.env.ci){
+        let userName = process.env.userName;
+        if(!userName){
             const cred = new ChainedTokenCredential(
                 new AzureCliCredential(),
                 new AzurePowerShellCredential(),
@@ -26,7 +26,7 @@ async function globalSetup(config: FullConfig) {
         await page.goto(baseURL!, { waitUntil: 'networkidle' });
 
         const userNameTextBox = page.locator('[name=loginfmt]');
-        userNameTextBox.fill(userName);
+        userNameTextBox.fill(userName!);
         await page.getByRole('button', { name: 'Next' }).click();
 
         const passwordTextBox = page.locator('[name=passwd]');
