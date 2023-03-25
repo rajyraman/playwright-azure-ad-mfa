@@ -1,20 +1,19 @@
-import { chromium, FullConfig } from '@playwright/test';
+import { chromium, FullConfig, test as setup } from '@playwright/test';
 import { TOTP } from 'otpauth';
 import {
     ChainedTokenCredential,
     AzureCliCredential,
     AzurePowerShellCredential,
-    ManagedIdentityCredential
+    ManagedIdentityCredential,
 } from '@azure/identity';
 
-async function globalSetup(config: FullConfig) {
-    const { baseURL, storageState } = config.projects[0].use;
+setup('do login', async ({ page, baseURL }) => {
     //if there is any issue use chromium.launch({ headless: false })
     if (process.env.isRefreshCookies === '1') {
         const browser = await chromium.launch();
         const page = await browser.newPage();
-        let userName = process.env.userName;
-        if(!userName){
+        let userName = process.env.loginUserName;
+        if (!userName) {
             const cred = new ChainedTokenCredential(
                 new AzureCliCredential(),
                 new AzurePowerShellCredential(),
@@ -48,9 +47,6 @@ async function globalSetup(config: FullConfig) {
 
         await page.getByRole('button', { name: 'Yes' }).click();
         await page.waitForURL('**/main.aspx**');
-        await page.context().storageState({ path: storageState as string });
-        await browser.close();
+        await page.context().storageState({ path: process.env.storageState });
     }
-}
-
-export default globalSetup;
+});

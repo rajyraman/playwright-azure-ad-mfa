@@ -21,7 +21,6 @@ const config: PlaywrightTestConfig = {
          */
         timeout: 5000,
     },
-    globalSetup: require.resolve('./globalSetup'),
     /* Run tests in files in parallel */
     fullyParallel: true,
 
@@ -41,20 +40,25 @@ const config: PlaywrightTestConfig = {
         trace: 'on-first-retry',
         ignoreHTTPSErrors: true,
         video: 'on-first-retry',
-        baseURL: process.env.environmentUrl,
-        storageState: './sessionstate.json',
         headless: true,
+        baseURL: process.env.environmentUrl,
+        ...devices['Desktop Chrome'],
     },
 
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'chromium',
+            name: 'setup',
+            testMatch: '**/*.setup.ts',
+        },
+        {
+            name: 'tests',
+            testMatch: '**/*.spec.ts',
+            dependencies: ['setup'],
             use: {
-                ...devices['Desktop Chrome'],
+                storageState: process.env.storageState,
             },
         },
-
         // {
         //   name: 'firefox',
         //   use: {
